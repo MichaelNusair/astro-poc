@@ -1,0 +1,29 @@
+{%- comment -%}  Server-rendered gallery from Astro  {%- endcomment -%}
+
+{% assign id = product.id | url_encode %}
+{% assign h  = product.handle | url_encode %}
+
+<!-- Hide native images but keep wrapper -->
+<style>
+  .product__media img, .product__media video,
+  .product__media model-viewer, .product__media [data-media-id] {display:none!important;}
+</style>
+
+<!-- Placeholder skeleton (same size as hero) -->
+<div id="tolstoy-placeholder"
+     style="width:100%;padding-top:100%;background:#f6f6f6;
+            animation:tp 1.2s infinite linear;background-size:200% 100%;">
+</div>
+<style>@keyframes tp{0%{background-position:200% 0}100%{background-position:-200% 0}}</style>
+
+<!-- Fetch Astro-rendered HTML once, then hydrate -->
+<script>
+(async()=>{
+  const url=`https://astro.your-app.com/gallery?product_id={{ id }}&handle={{ h }}`;
+  const html=await fetch(url,{headers:{Accept:'text/html'}}).then(r=>r.text());
+  document.getElementById('tolstoy-placeholder').outerHTML=html;
+  const js=document.createElement('script');
+  js.src='{{ "tolstoy-hydrate.js" | asset_url }}'; js.defer=true;
+  document.head.appendChild(js);
+})();
+</script>

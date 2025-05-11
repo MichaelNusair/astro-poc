@@ -1,0 +1,52 @@
+<!doctype html>
+<html class="js" lang="{{ request.locale.iso_code }}">
+  <head>
+    {%- comment -%}  ▒▒ meta + fonts (block unchanged) ▒▒  {%- endcomment -%}
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    …
+    {{ content_for_header }}
+
+    {%- comment -%}  ▒▒ global CSS (unchanged) ▒▒  {%- endcomment -%}
+    {% style %}
+      {{ settings.type_body_font | font_face: font_display: 'swap' }}
+      …
+      /*  ───────────────────────────────────────────────
+          everything inside this <style> block is exactly
+          what you already had – no stray rules outside!
+          ─────────────────────────────────────────────── */
+    {% endstyle %}
+
+    {{ 'base.css' | asset_url | stylesheet_tag }}
+    …
+
+    {%- comment -%}  ▒▒ NEW ▒▒  load gallery hydration JS only on product pages  {%- endcomment -%}
+    {% if template contains 'product' %}
+      {{ 'tolstoy-hydrate.js' | asset_url | script_tag }}
+    {% endif %}
+  </head>
+
+  <body class="gradient{% if settings.animations_hover_elements != 'none' %} animate--hover-{{ settings.animations_hover_elements }}{% endif %}">
+    <a class="skip-to-content-link button visually-hidden" href="#MainContent">{{ 'accessibility.skip_to_text' | t }}</a>
+
+    {%- if settings.cart_type == 'drawer' -%}{% render 'cart-drawer' %}{%- endif -%}
+    {% sections 'header-group' %}
+
+    <main id="MainContent" class="content-for-layout focus-none" role="main" tabindex="-1">
+      {{ content_for_layout }}
+
+      {%- comment -%} ▒▒ NEW ▒▒  inline the Astro-rendered gallery snippet  {%- endcomment -%}
+      {% if template contains 'product' %}
+        {% render 'tolstoy-gallery' %}
+      {% endif %}
+    </main>
+
+    {% sections 'footer-group' %}
+
+    …
+    {%- if settings.cart_type == 'drawer' -%}
+      <script src="{{ 'cart-drawer.js' | asset_url }}" defer></script>
+    {%- endif -%}
+  </body>
+</html>
