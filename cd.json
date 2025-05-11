@@ -1,5 +1,5 @@
 {
-  "name": "",
+  "name": "tolstoy-gallery",
   "type": "module",
   "version": "0.0.1",
   "scripts": {
@@ -10,8 +10,5 @@
   },
   "dependencies": {
     "astro": "^5.7.12"
-  },
-  "devDependencies": {
-    "@astrojs/node": "^9.2.1"
   }
 }

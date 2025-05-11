@@ -1,0 +1,82 @@
+---
+export interface Item {
+  type: "image" | "video";
+  thumb: string;
+  src: string;
+}
+const { items }: { items: Item[] } = Astro.props;
+const first = items?.[0];
+---
+
+<div id="tolstoy-gallery" class="tg">
+  <!-- thumbnails -->
+  <div id="tg-thumbs">
+    {
+      items?.map((m, i) => (
+        <img
+          src={m.thumb}
+          alt={`Thumbnail ${i + 1}`}
+          width="72"
+          height="72"
+          data-idx={i}
+          data-type={m.type}
+          data-src={m.src}
+          class={i === 0 ? "active" : ""}
+          data-tolstoy
+        />
+      ))
+    }
+  </div>
+
+  <!-- hero -->
+  <div id="tg-main">
+    {
+      first?.type === "video" ? (
+        <video src={first.src} controls playsinline data-tolstoy />
+      ) : (
+        <img src={first?.src} alt="Hero" data-tolstoy />
+      )
+    }
+  </div>
+</div>
+
+<style>
+  :root {
+    --tg-thumb-size: 72px;
+  }
+  @media (max-width: 767px) {
+    :root {
+      --tg-thumb-size: 56px;
+    }
+  }
+
+  .tg {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: var(--tg-thumb-size) 1fr;
+  }
+  #tg-thumbs {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+  #tg-thumbs img {
+    width: 100%;
+    height: var(--tg-thumb-size);
+    object-fit: cover;
+    cursor: pointer;
+    border: 2px solid transparent;
+    border-radius: 4px;
+  }
+  #tg-thumbs img.active {
+    border-color: #eb5faf;
+  }
+
+  #tg-main > * {
+    max-width: 100%;
+    max-height: 80vh;
+    border-radius: 4px;
+  }
+</style>
